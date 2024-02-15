@@ -24,7 +24,9 @@ namespace VRMShaders
             ResetLastTimeoutBaseTime();
         }
 
-        public Task NextFrame()
+        public Task NextFrame()=> CheckTimeout() ? _NextFrame() : Task.CompletedTask;
+
+        public Task _NextFrame()
         {
             ResetLastTimeoutBaseTime();
             var tcs = new TaskCompletionSource<object>();
@@ -42,7 +44,7 @@ namespace VRMShaders
             return Task.Run(action);
         }
 
-        public Task NextFrameIfTimedOut() => CheckTimeout() ? NextFrame() : Task.CompletedTask;
+        public Task NextFrameIfTimedOut() => CheckTimeout() ? _NextFrame() : Task.CompletedTask;
 
         private void ResetLastTimeoutBaseTime() => _lastTimeoutBaseTime = 0f;
 
